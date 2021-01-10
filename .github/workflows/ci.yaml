@@ -21,8 +21,6 @@ jobs:
 
     - name: Test
       run: go test -v -coverprofile=coverage.out ./...
-      env:
-        GOPRIVATE: github.com/Coderlane/go-minecraft-ping
 
     - name: Upload Coverage
       uses: codecov/codecov-action@v1
