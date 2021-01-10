@@ -6,6 +6,7 @@ import (
 	"github.com/magiconair/properties"
 )
 
+// Config represents the Minecraft server config
 type Config struct {
 	AllowFlight                    bool   `properties:"allow-flight,default=false" json:"allow_flight" firebase:"allow_flight"`
 	AllowNether                    bool   `properties:"allow-nether,default=true" json:"allow_nether" firebase:"allow_nether"`
@@ -55,6 +56,7 @@ type Config struct {
 	EnforceWhitelist               bool   `properties:"enforce-whitelist,default=false" json:"enforce_whitelist" firebase:"enforce_whitelist"`
 }
 
+// LoadConfig loads server config from the provided directory
 func LoadConfig(dir string) (*Config, error) {
 	cfgFile := path.Join(dir, "server.properties")
 
