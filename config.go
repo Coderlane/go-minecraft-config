@@ -46,6 +46,7 @@ type Config struct {
 	ResourcePack                   string `properties:"resource-pack,default=" json:"resource_pack" firebase:"resource_pack"`
 	ResourcePackSha1               string `properties:"resource-pack-sha1,default=" json:"resource_pack_sha1" firebase:"resource_pack_sha1"`
 	RequireResourcePack            bool   `properties:"require-resource-pack,default=false" json:"require_resource_pack" firebase:"require_resource_pack"`
+	ServerIP                       string `properties:"server-ip,default=" json:"server_ip" firebase:"server_ip"`
 	ServerPort                     int    `properties:"server-port,default=25565" json:"server_port" firebase:"server_port"`
 	SnooperEnabled                 bool   `properties:"snooper-enabled,default=true" json:"snooper_enabled" firebase:"snooper_enabled"`
 	SpawnAnimals                   bool   `properties:"spawn-animals,default=true" json:"spawn_animals" firebase:"spawn_animals"`
