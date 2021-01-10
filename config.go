@@ -1,9 +1,19 @@
 package config
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"path"
 
 	"github.com/magiconair/properties"
+)
+
+const (
+	filenameServerProperties string = "server.properties"
+	filenameBannedIPs        string = "banned-ips.json"
+	filenameBannedPlayers    string = "banned-players.json"
+	filenameOPs              string = "ops.json"
+	filenameWhitelist        string = "whitelist.json"
 )
 
 // Config represents the Minecraft server config
@@ -57,11 +67,22 @@ type Config struct {
 	EnforceWhitelist               bool   `properties:"enforce-whitelist,default=false" json:"enforce_whitelist" firebase:"enforce_whitelist"`
 }
 
+func loadConfigFile(dir, file string) ([]byte, error) {
+	return ioutil.ReadFile(path.Join(dir, file))
+}
+
+func loadJSONConfigFile(dir, file string, cfg interface{}) error {
+	data, err := loadConfigFile(dir, file)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, cfg)
+}
+
 // LoadConfig loads server config from the provided directory
 func LoadConfig(dir string) (*Config, error) {
-	cfgFile := path.Join(dir, "server.properties")
-
-	props, err := properties.LoadFile(cfgFile, properties.UTF8)
+	props, err := properties.LoadFile(
+		path.Join(dir, filenameServerProperties), properties.UTF8)
 	if err != nil {
 		return nil, err
 	}
@@ -72,4 +93,32 @@ func LoadConfig(dir string) (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+// LoadDenyIPList loads `banned-ips.json`
+func LoadDenyIPList(dir string) (DenyIPList, error) {
+	var list DenyIPList
+	err := loadJSONConfigFile(dir, filenameBannedIPs, &list)
+	return list, err
+}
+
+// LoadDenyUserList loads `banned-players.json`
+func LoadDenyUserList(dir string) (DenyUserList, error) {
+	var list DenyUserList
+	err := loadJSONConfigFile(dir, filenameBannedPlayers, &list)
+	return list, err
+}
+
+// LoadAllowUserList loads `whitelist.json`
+func LoadAllowUserList(dir string) (AllowUserList, error) {
+	var list AllowUserList
+	err := loadJSONConfigFile(dir, filenameWhitelist, &list)
+	return list, err
+}
+
+// LoadOperatorUserList loads `pos.json`
+func LoadOperatorUserList(dir string) (OperatorUserList, error) {
+	var list OperatorUserList
+	err := loadJSONConfigFile(dir, filenameOPs, &list)
+	return list, err
 }

@@ -12,8 +12,8 @@ type User struct {
 	UUID string `json:"uuid" firebase:"uuid"`
 }
 
-// OPUser represents an operator in the OperatorList
-type OPUser struct {
+// OperatorUser represents an operator in the OperatorUserList
+type OperatorUser struct {
 	User
 
 	// Level represents the operator level which determines what they can modify
@@ -21,13 +21,13 @@ type OPUser struct {
 	BypassesPlayerLimit bool `json:"bypassesPlayerLimit" firebase:"bypasses_player_limit"`
 }
 
-// OperatorList represents a list of operators of a minecraft server
+// OperatorUserList represents a list of operators of a minecraft server
 // IE: The list of operators from `ops.json`
-type OperatorList []OPUser
+type OperatorUserList []OperatorUser
 
-// AllowList represents a list of users allowed to join a minecraft server.
+// AllowUserList represents a list of users allowed to join a minecraft server.
 // IE: The list of users from `whitelist.json`
-type AllowList []User
+type AllowUserList []User
 
 // Deny represents why a `User` or `net.IP` was denied access to a server.
 type Deny struct {

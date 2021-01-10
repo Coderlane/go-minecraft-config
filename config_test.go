@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-const defaultServerProperties = `
+const testServerProperties = `
 #Minecraft server properties
 #Sat Jan 09 18:23:20 EST 2021
 enable-jmx-monitoring=false
@@ -52,7 +52,7 @@ spawn-npcs=true
 spawn-animals=true
 snooper-enabled=true
 function-permission-level=2
-level-type=default
+level-type=test
 text-filtering-config=
 spawn-monsters=true
 enforce-whitelist=false
@@ -61,14 +61,54 @@ spawn-protection=16
 max-world-size=29999984
 `
 
-func TestLoadDeafultConfig(t *testing.T) {
-	testDir := t.TempDir()
-	testFile := path.Join(testDir, "server.properties")
-	err := ioutil.WriteFile(testFile, []byte(defaultServerProperties), 0600)
+const testDenyIPs = `[
+  {
+    "ip": "127.0.0.134",
+    "created": "2020-09-14 23:05:05 -0400",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "Deny by an operator."
+  }
+]`
+
+const testDenyUsers = `[
+  {
+    "uuid": "9b15dea6-606e-47a4-a241-000000000000",
+    "name": "Test",
+    "created": "2020-09-14 23:01:51 -0400",
+    "source": "Server",
+    "expires": "forever",
+    "reason": "Banned by an operator."
+  }
+]`
+
+const testAllowUsers = `[
+  {
+    "uuid": "9b15dea6-606e-47a4-a241-000000000000",
+    "name": "Test"
+  }
+]`
+
+const testOPs = `[
+  {
+    "uuid": "9b15dea6-606e-47a4-a241-000000000000",
+    "name": "Test",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  }
+]`
+
+func writeTestFile(t *testing.T, dir, file, data string) {
+	testFile := path.Join(dir, file)
+	err := ioutil.WriteFile(testFile, []byte(data), 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
+}
 
+func TestLoadDeafultConfig(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameServerProperties, testServerProperties)
 	cfg, err := LoadConfig(testDir)
 	if err != nil {
 		t.Fatal(err)
@@ -89,7 +129,7 @@ func TestLoadMissingConfig(t *testing.T) {
 
 func TestLoadInvalidConfig(t *testing.T) {
 	testDir := t.TempDir()
-	testFile := path.Join(testDir, "server.properties")
+	testFile := path.Join(testDir, filenameServerProperties)
 	err := ioutil.WriteFile(testFile, []byte("query.port=false"), 0600)
 	if err != nil {
 		t.Fatal(err)
@@ -103,4 +143,68 @@ func TestLoadInvalidConfig(t *testing.T) {
 		t.Errorf("Expected config to be nil")
 	}
 	t.Log(err)
+}
+
+func TestLoadDenyIPList(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameBannedIPs, testDenyIPs)
+
+	cfg, err := LoadDenyIPList(testDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v\n", cfg)
+}
+
+func TestLoadDenyUserList(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameBannedPlayers, testDenyUsers)
+
+	cfg, err := LoadDenyUserList(testDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v\n", cfg)
+}
+
+func TestLoadAllowUserList(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameWhitelist, testAllowUsers)
+
+	cfg, err := LoadAllowUserList(testDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v\n", cfg)
+}
+
+func TestLoadOperatorUserList(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameOPs, testOPs)
+
+	cfg, err := LoadOperatorUserList(testDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v\n", cfg)
+}
+
+func TestLoadMissingOperatorUserList(t *testing.T) {
+	testDir := t.TempDir()
+	_, err := LoadOperatorUserList(testDir)
+	if err == nil {
+		t.Fatalf("Expected an error")
+	}
+	t.Logf("%+v\n", err)
+}
+
+func TestLoadCorruptedOperatorUserList(t *testing.T) {
+	testDir := t.TempDir()
+	writeTestFile(t, testDir, filenameOPs, "invalid")
+
+	_, err := LoadOperatorUserList(testDir)
+	if err == nil {
+		t.Fatalf("Expected an error")
+	}
+	t.Logf("%+v\n", err)
 }
