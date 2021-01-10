@@ -9,11 +9,16 @@ import (
 )
 
 const (
-	filenameServerProperties string = "server.properties"
-	filenameBannedIPs        string = "banned-ips.json"
-	filenameBannedPlayers    string = "banned-players.json"
-	filenameOPs              string = "ops.json"
-	filenameWhitelist        string = "whitelist.json"
+	// MinecraftConfigFile maps to `server.properties`
+	MinecraftConfigFile string = "server.properties"
+	// MinecraftDenyIPFile maps to `banned-ips.json`
+	MinecraftDenyIPFile string = "banned-ips.json"
+	// MinecraftDenyUserFile maps to `banned-players.json`
+	MinecraftDenyUserFile string = "banned-players.json"
+	// MinecraftOperatorUserFile maps to `ops.json`
+	MinecraftOperatorUserFile string = "ops.json"
+	// MinecraftAllowUserFile maps to `whitelist.json`
+	MinecraftAllowUserFile string = "whitelist.json"
 )
 
 // Config represents the Minecraft server config
@@ -82,7 +87,7 @@ func loadJSONConfigFile(dir, file string, cfg interface{}) error {
 // LoadConfig loads server config from the provided directory
 func LoadConfig(dir string) (*Config, error) {
 	props, err := properties.LoadFile(
-		path.Join(dir, filenameServerProperties), properties.UTF8)
+		path.Join(dir, MinecraftConfigFile), properties.UTF8)
 	if err != nil {
 		return nil, err
 	}
@@ -98,27 +103,27 @@ func LoadConfig(dir string) (*Config, error) {
 // LoadDenyIPList loads `banned-ips.json`
 func LoadDenyIPList(dir string) (DenyIPList, error) {
 	var list DenyIPList
-	err := loadJSONConfigFile(dir, filenameBannedIPs, &list)
+	err := loadJSONConfigFile(dir, MinecraftDenyIPFile, &list)
 	return list, err
 }
 
 // LoadDenyUserList loads `banned-players.json`
 func LoadDenyUserList(dir string) (DenyUserList, error) {
 	var list DenyUserList
-	err := loadJSONConfigFile(dir, filenameBannedPlayers, &list)
+	err := loadJSONConfigFile(dir, MinecraftDenyUserFile, &list)
 	return list, err
 }
 
 // LoadAllowUserList loads `whitelist.json`
 func LoadAllowUserList(dir string) (AllowUserList, error) {
 	var list AllowUserList
-	err := loadJSONConfigFile(dir, filenameWhitelist, &list)
+	err := loadJSONConfigFile(dir, MinecraftAllowUserFile, &list)
 	return list, err
 }
 
 // LoadOperatorUserList loads `pos.json`
 func LoadOperatorUserList(dir string) (OperatorUserList, error) {
 	var list OperatorUserList
-	err := loadJSONConfigFile(dir, filenameOPs, &list)
+	err := loadJSONConfigFile(dir, MinecraftOperatorUserFile, &list)
 	return list, err
 }

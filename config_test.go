@@ -108,7 +108,7 @@ func writeTestFile(t *testing.T, dir, file, data string) {
 
 func TestLoadDeafultConfig(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameServerProperties, testServerProperties)
+	writeTestFile(t, testDir, MinecraftConfigFile, testServerProperties)
 	cfg, err := LoadConfig(testDir)
 	if err != nil {
 		t.Fatal(err)
@@ -129,7 +129,7 @@ func TestLoadMissingConfig(t *testing.T) {
 
 func TestLoadInvalidConfig(t *testing.T) {
 	testDir := t.TempDir()
-	testFile := path.Join(testDir, filenameServerProperties)
+	testFile := path.Join(testDir, MinecraftConfigFile)
 	err := ioutil.WriteFile(testFile, []byte("query.port=false"), 0600)
 	if err != nil {
 		t.Fatal(err)
@@ -147,7 +147,7 @@ func TestLoadInvalidConfig(t *testing.T) {
 
 func TestLoadDenyIPList(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameBannedIPs, testDenyIPs)
+	writeTestFile(t, testDir, MinecraftDenyIPFile, testDenyIPs)
 
 	cfg, err := LoadDenyIPList(testDir)
 	if err != nil {
@@ -158,7 +158,7 @@ func TestLoadDenyIPList(t *testing.T) {
 
 func TestLoadDenyUserList(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameBannedPlayers, testDenyUsers)
+	writeTestFile(t, testDir, MinecraftDenyUserFile, testDenyUsers)
 
 	cfg, err := LoadDenyUserList(testDir)
 	if err != nil {
@@ -169,7 +169,7 @@ func TestLoadDenyUserList(t *testing.T) {
 
 func TestLoadAllowUserList(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameWhitelist, testAllowUsers)
+	writeTestFile(t, testDir, MinecraftAllowUserFile, testAllowUsers)
 
 	cfg, err := LoadAllowUserList(testDir)
 	if err != nil {
@@ -180,7 +180,7 @@ func TestLoadAllowUserList(t *testing.T) {
 
 func TestLoadOperatorUserList(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameOPs, testOPs)
+	writeTestFile(t, testDir, MinecraftOperatorUserFile, testOPs)
 
 	cfg, err := LoadOperatorUserList(testDir)
 	if err != nil {
@@ -200,7 +200,7 @@ func TestLoadMissingOperatorUserList(t *testing.T) {
 
 func TestLoadCorruptedOperatorUserList(t *testing.T) {
 	testDir := t.TempDir()
-	writeTestFile(t, testDir, filenameOPs, "invalid")
+	writeTestFile(t, testDir, MinecraftOperatorUserFile, "invalid")
 
 	_, err := LoadOperatorUserList(testDir)
 	if err == nil {
