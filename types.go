@@ -7,9 +7,9 @@ import (
 // User represents a minecraft user
 type User struct {
 	// Name is the display name of the minecraft user
-	Name string `json:"name" firebase:"name"`
+	Name string `json:"name" firestore:"name"`
 	// UUID is the unique identifier of the minecraft user
-	UUID string `json:"uuid" firebase:"uuid"`
+	UUID string `json:"uuid" firestore:"uuid"`
 }
 
 // OperatorUser represents an operator in the OperatorUserList
@@ -17,8 +17,8 @@ type OperatorUser struct {
 	User
 
 	// Level represents the operator level which determines what they can modify
-	Level               int  `json:"level" firebase:"level"`
-	BypassesPlayerLimit bool `json:"bypassesPlayerLimit" firebase:"bypasses_player_limit"`
+	Level               int  `json:"level" firestore:"level"`
+	BypassesPlayerLimit bool `json:"bypassesPlayerLimit" firestore:"bypasses_player_limit"`
 }
 
 // OperatorUserList represents a list of operators of a minecraft server
@@ -32,19 +32,19 @@ type AllowUserList []User
 // Deny represents why a `User` or `net.IP` was denied access to a server.
 type Deny struct {
 	// Created is when the ban was created
-	Created MinecraftTime `json:"created" firebase:"created"`
+	Created MinecraftTime `json:"created" firestore:"created"`
 	// Source represents where the ban originated from. IE: user or console
-	Source string `json:"source" firebase:"source"`
+	Source string `json:"source" firestore:"source"`
 	// Expires represents when the ban expires, usually "forever"
-	Expires MinecraftTime `json:"expires" firebase:"expires"`
+	Expires MinecraftTime `json:"expires" firestore:"expires"`
 	// Reason represents why a ban was created
-	Reason string `json:"reason" firebase:"reason"`
+	Reason string `json:"reason" firestore:"reason"`
 }
 
 // DenyIP represents why a `net.IP` was denied access to a server.
 type DenyIP struct {
 	// IP is the `net.IP` that was banned, typically IPv4
-	IP net.IP `json:"ip" firebase:"ip"`
+	IP net.IP `json:"ip" firestore:"ip"`
 	Deny
 }
 
